@@ -11,6 +11,8 @@ public class Main {
             if (enterCommand.equalsIgnoreCase("выйти") || enterCommand.equalsIgnoreCase("в")) {
                 System.exit(0);
             } else if (enterCommand.equalsIgnoreCase("играть") || enterCommand.equals("и")) {
+
+                //нужно ли знать загаданное слово? пустое = false
                 Game game = new Game(true);
                 System.out.println("Игра начинается");
                 game.startGame();

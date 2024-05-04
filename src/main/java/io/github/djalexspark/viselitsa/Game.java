@@ -28,7 +28,7 @@ public class Game {
     }
     public Game(boolean showAnswer){
         this();
-        System.out.println(this.realWord);
+        System.out.println("Загаданное слово - "+this.realWord);
     }
 
     private static void replaceAll(StringBuilder builder, String word, String symbolToReplace) {
