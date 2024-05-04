@@ -7,7 +7,7 @@ public class Main {
         while (true) {
             System.out.println("(И)грать или (В)ыйти");
 
-            String enterCommand = new Scanner(System.in).next();
+            String enterCommand = new Scanner(System.in).next().toLowerCase();
             if (enterCommand.equalsIgnoreCase("выйти") || enterCommand.equalsIgnoreCase("в")) {
                 System.exit(0);
             } else if (enterCommand.equalsIgnoreCase("играть") || enterCommand.equals("и")) {
