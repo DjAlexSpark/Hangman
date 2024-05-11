@@ -138,7 +138,7 @@ public class Game implements PartsOfHangman{
         try {
             list = Files.readAllLines(Path.of(getClass().getResource("dictionary.txt").toURI()));
         } catch (IOException | URISyntaxException e) {
-            list.add("нетсловаря");
+            list.add("нет_словаря");
             throw new RuntimeException(e);
         }
         return list;
