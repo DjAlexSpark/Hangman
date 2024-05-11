@@ -9,27 +9,31 @@ import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 
-public class Game {
-    ArrayList dictionary;
+
+public class Game implements PartsOfHangman{
+    ArrayList<String> dictionary;
     String realWord;
     StringBuilder passWord;
     Scanner scanner;
-    String c;
+    boolean showHints;
+    int count;
+    boolean isNotLose;
 
     public Game() {
-        this.dictionary = new ArrayList(listOfWords());
-        this.realWord = dictionary.get(new Random().nextInt(dictionary.size())).toString().toLowerCase();
-        scanner = new Scanner(System.in);
-        passWord = new StringBuilder(realWord.length());
-
+        this.isNotLose = true;
+        this.showHints = false;
+        this.dictionary = new ArrayList<String>(listOfWordsFromFile());
+        Random random = new Random();
+        int indexOfWord = random.nextInt(dictionary.size());
+        this.realWord = dictionary.get(indexOfWord).toLowerCase();
+        this.scanner = new Scanner(System.in);
+        this.passWord = new StringBuilder(realWord.length());
+        this.count = 0;
         for (int i = 0; i < realWord.length(); i++) {
             passWord.append('*');
         }
     }
-    public Game(boolean showAnswer){
-        this();
-        System.out.println("Загаданное слово - "+this.realWord);
-    }
+
 
     private static void replaceAll(StringBuilder builder, String word, String symbolToReplace) {
         for (int i = 0; i < word.length(); i++) {
@@ -39,17 +43,97 @@ public class Game {
         }
     }
 
-    public void startGame() {
-        while (realWord.compareTo(passWord.toString()) != 0) {
-            System.out.println(passWord + "\nprint letter");
-            c = String.valueOf(scanner.next().charAt(0));
-            replaceAll(passWord, realWord, c);
-
-        }
-        System.out.println("you win");
+    public void setShowHints(boolean showHints) {
+        this.showHints = showHints;
     }
 
-    private List listOfWords() {
+    public void start() {
+        if(showHints) System.out.println(this.realWord);
+        count=0;
+        while (isNotWin()&& isNotLose&&count<=6) {
+            showHangman(count);
+            System.out.println(passWord + "\nвведите букву");
+            String letterToReplace = String.valueOf(scanner.next().charAt(0));
+            replaceAll(passWord, realWord, letterToReplace);
+            if (realWord.indexOf(letterToReplace)<0){count++;}
+        }
+
+        if (!isNotWin()){System.out.println(realWord+"\nвы победили");}
+        else {
+            System.out.println("Вы проиграли, " +
+                    "\nзагаданное слово - "+realWord);
+        }
+
+    }
+
+    private void showHangman(int numberOfPart) {
+            switch(numberOfPart){
+                case(NOTHING):
+                    System.out.println(
+                            " __\n" +
+                            "|  \n" +
+                            "| \n" +
+                            "|\n" +
+                            "|");
+                    break;
+                case(HEAD):
+                    System.out.println(
+                            " __\n" +
+                            "|  о\n" +
+                            "|  \n" +
+                            "|\n" +
+                            "|");
+                    break;
+                case(LEFT_HAND):
+                    System.out.println(
+                            " __\n" +
+                                    "|  о\n" +
+                                    "| / \n" +
+                                    "|\n" +
+                                    "|");
+                    break;
+                case(RIGHT_HAND):
+                    System.out.println(
+                                    " __\n" +
+                                    "|  о\n" +
+                                    "| / \\\n" +
+                                    "|\n" +
+                                    "|");
+                    break;
+                case(BODY):
+                    System.out.println(
+                            " __\n" +
+                                    "|  о\n" +
+                                    "| /|\\\n" +
+                                    "|\n" +
+                                    "|");
+                    break;
+                case(LEFT_LEG):
+                    System.out.println(
+                            " __\n" +
+                                    "|  о\n" +
+                                    "| /|\\\n" +
+                                    "| /\n" +
+                                    "|");
+                    break;
+                case(RIGHT_LEG):
+                    System.out.println(
+                                    " __\n" +
+                                    "|  о\n" +
+                                    "| /|\\\n" +
+                                    "| / \\\n" +
+                                    "|");
+                    break;
+                default:
+                    break;
+            }
+    }
+
+    private boolean isNotWin() {
+        return this.realWord.compareTo(passWord.toString()) != 0;
+    }
+
+    private List<String> listOfWordsFromFile() {
         List list = new ArrayList<>();
         try {
             list = Files.readAllLines(Path.of(getClass().getResource("dictionary.txt").toURI()));
@@ -59,5 +143,4 @@ public class Game {
         }
         return list;
     }
-
 }
